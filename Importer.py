@@ -12,6 +12,21 @@ if __name__ == '__main__':
     args = parser.parse_args()
     api = login(args.email, args.password)
 
+    success = []
+    failed = []
+
     with open(args.file, 'r') as f:
         ids = msgpack.unpackb(f.read())
-        print map(api.add_aa_track, ids)
+
+        for t in ids:
+            try:
+                a = api.add_aa_track(t)
+                success.append(a)
+            except Exception as e:
+                failed.append({'track': t, 'error': e)
+
+        print '== Succeeded =='
+        print success
+        print ''
+        print '== Failed =='
+        print failed
